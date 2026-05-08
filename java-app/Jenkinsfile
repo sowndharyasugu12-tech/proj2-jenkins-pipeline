@@ -3,7 +3,6 @@ pipeline {
 
     tools {
         maven 'Maven'
-        sonarScanner 'sonar-scanner'
     }
 
     environment {
@@ -32,8 +31,17 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('sonarqube') {
-                    sh 'mvn sonar:sonar'
+                script {
+                    // Resolve SonarScanner tool path
+                    def scannerHome = tool name: 'sonar-scanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
+
+                    // Run analysis with SonarQube environment
+                    withSonarQubeEnv('MySonarQubeServer') {
+                        sh "${scannerHome}/bin/sonar-scanner \
+                            -Dsonar.projectKey=proj2-jenkins-pipeline \
+                            -Dsonar.sources=src \
+                            -Dsonar.java.binaries=target/classes"
+                    }
                 }
             }
         }
