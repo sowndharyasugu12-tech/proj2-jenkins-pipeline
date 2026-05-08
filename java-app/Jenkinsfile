@@ -27,7 +27,9 @@ pipeline {
 
         stage('Unit Test') {
             steps {
+                 dir('java-app') {
                 sh 'mvn test'
+                 }
             }
         }
 
@@ -41,8 +43,8 @@ pipeline {
                     withSonarQubeEnv('MySonarQubeServer') {
                         sh "${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=proj2-jenkins-pipeline \
-                            -Dsonar.sources=src \
-                            -Dsonar.java.binaries=target/classes"
+                            -Dsonar.sources=java-app/src \
+                            -Dsonar.java.binaries=java-app/target/classes"
                     }
                 }
             }
