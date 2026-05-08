@@ -3,16 +3,11 @@ pipeline {
 
     tools {
         maven 'Maven'
-        jdk 'JDK17'
+        sonarScanner 'sonar-scanner'
     }
 
     environment {
         DOCKER_IMAGE = "9500588005/java-app"
-    }
-    tools {
-        Maven 'Maven 3.8.7' // Name must match Global Tool Configuration
-        jdk 'Java 17'
-        sonar-scanner 'SonarQube Scanner 5.0.1.3006' // Name must match Global Tool Configuration
     }
 
     stages {
