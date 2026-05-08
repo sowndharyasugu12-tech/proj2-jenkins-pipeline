@@ -50,19 +50,18 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
-            }
-        }
+      withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
+           sh 'export DOCKER_BUILDKIT=1'
+          sh """
+          docker buildx build \
+            --platform linux/amd64 \
+            -t sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER} \
+            -t sowndharyasugu12-tech/proj2-jenkins-pipeline:latest \
+            java-app \
+            --push
+    """
+}
 
-        stage('Push Docker Image') {
-            steps {
-                withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
-                    sh 'docker push $DOCKER_IMAGE:$BUILD_NUMBER'
-                }
-            }
-        }
 
         stage('Deploy to Kubernetes') {
             steps {
