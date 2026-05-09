@@ -55,12 +55,13 @@ pipeline {
         script {
             withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
                 sh """
-                    docker buildx build \
-                        --platform linux/amd64 \
+                    export DOCKER_BUILDKIT=1
+                    docker build \
                         -t sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER} \
                         -t sowndharyasugu12-tech/proj2-jenkins-pipeline:latest \
-                        java-app \
-                        --push
+                        java-app
+                    docker push sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER}
+                    docker push sowndharyasugu12-tech/proj2-jenkins-pipeline:latest
                 """
             }
         }
