@@ -80,18 +80,13 @@ pipeline {
                 kubectl config use-context kind-myproject2
                 kubectl apply -f java-app/k8s/deployment.yml
                 kubectl apply -f java-app/k8s/service.yml
+                sh 'kubectl get pods'
+                sh 'kubectl get svc'
             '''
         }
     }
 }
 
-        stage('Verify Deployment') {
-            steps {
-                sh 'kubectl get pods'
-                sh 'kubectl get svc'
-            }
-        }
-    }
 
     post {
 
