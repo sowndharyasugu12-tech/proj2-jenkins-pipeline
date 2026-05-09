@@ -50,23 +50,23 @@ pipeline {
             }
         }
 
-      stage('Docker Build & Push') {
+    stage('Docker Build & Push - Buildx') {
     steps {
         script {
             withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
                 sh """
-                    export DOCKER_BUILDKIT=1
-                    docker build \
+                    docker buildx build \
+                        --platform linux/amd64 \
                         -t sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER} \
                         -t sowndharyasugu12-tech/proj2-jenkins-pipeline:latest \
-                        java-app
-                    docker push sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER}
-                    docker push sowndharyasugu12-tech/proj2-jenkins-pipeline:latest
+                        java-app \
+                        --push
                 """
             }
         }
     }
 }
+
 
 
         stage('Deploy to Kubernetes') {
