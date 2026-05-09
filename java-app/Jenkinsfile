@@ -78,8 +78,8 @@ pipeline {
 
                 # Switch to the correct context
                 kubectl config use-context kind-myproject2
-                kubectl apply -f k8s/deployment.yml
-                kubectl apply -f k8s/service.yml
+                kubectl apply -f java-app/k8s/deployment.yml
+                kubectl apply -f java-app/k8s/service.yml
             '''
         }
     }
