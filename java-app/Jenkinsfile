@@ -71,9 +71,9 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
-                sed -i "s/latest/$BUILD_NUMBER/g" k8s/deployment.yaml
-                kubectl apply -f k8s/deployment.yaml
-                kubectl apply -f k8s/service.yaml
+                sed -i "s/latest/$BUILD_NUMBER/g" java-app/k8s/deployment.yaml
+                kubectl apply -f java-app/k8s/deployment.yaml
+                kubectl apply -f java-app/k8s/service.yaml
                 '''
             }
         }
