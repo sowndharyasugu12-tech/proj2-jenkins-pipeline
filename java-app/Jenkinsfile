@@ -99,7 +99,9 @@ pipeline {
             NODE_PORT=$(kubectl get svc java-service -o jsonpath='{.spec.ports[0].nodePort}')
             NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
             echo "Testing app endpoint..."
-            curl --fail http://$NODE_IP:$NODE_PORT || exit 1
+            kubectl port-forward service/myapp-service 9090:80 &
+            sleep 20
+            curl -f http://localhost:9090
         '''
     }
 }
