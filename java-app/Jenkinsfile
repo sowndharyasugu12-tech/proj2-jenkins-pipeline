@@ -75,9 +75,9 @@ pipeline {
             sh '''
                 echo "$KUBECONFIG_DATA" | base64 --decode > $WORKSPACE/kubeconfig
                 export KUBECONFIG=$WORKSPACE/kubeconfig
-
                 # Switch to the correct context
                 kubectl config use-context kind-myproject2
+                sed -i "s|image: .*|image: $DOCKER_HUB_USER/proj2-jenkins-pipeline:${BUILD_NUMBER}|g" java-app/k8s/deployment.yml
                 kubectl apply -f java-app/k8s/deployment.yml
                 kubectl apply -f java-app/k8s/service.yml
                 sleep 200s
@@ -87,6 +87,21 @@ pipeline {
         }
     }
 }
+}
+    stage('Verify Service') {
+    steps {
+        sh '''
+            export KUBECONFIG=$WORKSPACE/kubeconfig
+
+            echo "Services:"
+            kubectl get svc
+            # Optional: curl the NodePort/LoadBalancer endpoint
+            NODE_PORT=$(kubectl get svc java-app-service -o jsonpath='{.spec.ports[0].nodePort}')
+            NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
+            echo "Testing app endpoint..."
+            curl --fail http://$NODE_IP:$NODE_PORT || exit 1
+        '''
+    }
 }
 
     post {
