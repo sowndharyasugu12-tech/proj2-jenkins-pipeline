@@ -78,6 +78,7 @@ pipeline {
                 kubectl config use-context kind-myproject2
                 kind load docker-image $DOCKER_HUB_USER/proj2-jenkins-pipeline:${BUILD_NUMBER} --name myproject2
                 sed -i "s|image: .*|image: $DOCKER_HUB_USER/proj2-jenkins-pipeline:${BUILD_NUMBER}|g" java-app/k8s/deployment.yml
+                sh 'kubectl apply -f k8s/rbac-endpointslice.yml'
                 kubectl apply -f java-app/k8s/deployment.yml
                 kubectl apply -f java-app/k8s/service.yml
                 kubectl rollout status deployment/java-app --timeout=120s
