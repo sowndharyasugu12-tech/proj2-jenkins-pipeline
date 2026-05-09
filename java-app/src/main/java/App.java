@@ -2,6 +2,14 @@ package com.devops;
 public class App {
     public static void main(String[] args) {
         System.out.println("Hello from Jenkins CI/CD Pipeline!");
-        Thread.sleep(60000);
+        while (true) {
+            try {
+                Thread.sleep(60000);
+            } catch (InterruptedException e) {
+                // Restore interrupt status and break loop
+                Thread.currentThread().interrupt();
+                break;
+            }
+        }
     }
 }
