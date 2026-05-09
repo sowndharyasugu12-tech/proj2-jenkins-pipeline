@@ -68,7 +68,6 @@ pipeline {
     }
 }
 
-
        stage('Deploy to myproject2 Cluster') {
     steps {
         withCredentials([string(credentialsId: 'kubeconfig-myproject2', variable: 'KUBECONFIG_DATA')]) {
@@ -77,10 +76,11 @@ pipeline {
                 export KUBECONFIG=$WORKSPACE/kubeconfig
                 # Switch to the correct context
                 kubectl config use-context kind-myproject2
+                kind load docker-image $DOCKER_HUB_USER/proj2-jenkins-pipeline:${BUILD_NUMBER} --name myproject2
                 sed -i "s|image: .*|image: $DOCKER_HUB_USER/proj2-jenkins-pipeline:${BUILD_NUMBER}|g" java-app/k8s/deployment.yml
                 kubectl apply -f java-app/k8s/deployment.yml
                 kubectl apply -f java-app/k8s/service.yml
-                sleep 200s
+                kubectl rollout status deployment/java-app --timeout=120s
                 kubectl get pods
                 kubectl get svc
             '''
@@ -95,7 +95,7 @@ pipeline {
             echo "Services:"
             kubectl get svc
             # Optional: curl the NodePort/LoadBalancer endpoint
-            NODE_PORT=$(kubectl get svc java-app-service -o jsonpath='{.spec.ports[0].nodePort}')
+            NODE_PORT=$(kubectl get svc java-service -o jsonpath='{.spec.ports[0].nodePort}')
             NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
             echo "Testing app endpoint..."
             curl --fail http://$NODE_IP:$NODE_PORT || exit 1
