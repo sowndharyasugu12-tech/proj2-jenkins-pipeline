@@ -76,9 +76,10 @@ pipeline {
                 echo "$KUBECONFIG_DATA" | base64 --decode > $WORKSPACE/kubeconfig
                 export KUBECONFIG=$WORKSPACE/kubeconfig
 
-                kubectl config use-context myproject2-context
-                kubectl apply -f k8s/deployment.yaml
-                kubectl apply -f k8s/service.yaml
+                # Switch to the correct context
+                kubectl config use-context kind-myproject2
+                kubectl apply -f k8s/deployment.yml
+                kubectl apply -f k8s/service.yml
             '''
         }
     }
