@@ -68,15 +68,29 @@ pipeline {
     }
 }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                sh '''
-                sed -i "s/latest/$BUILD_NUMBER/g" java-app/k8s/deployment.yaml
-                kubectl apply -f java-app/k8s/deployment.yaml
-                kubectl apply -f java-app/k8s/service.yaml
-                '''
-            }
+        stage('Create Kind Cluster') {
+    steps {
+        sh '''
+            kind create cluster --name myproject2
+            kubectl cluster-info
+        '''
+    }
+}
+
+       stage('Deploy to myproject2 Cluster') {
+    steps {
+        withCredentials([string(credentialsId: 'kubeconfig-myproject2', variable: 'KUBECONFIG_DATA')]) {
+            sh '''
+                echo "$KUBECONFIG_DATA" | base64 --decode > $WORKSPACE/kubeconfig
+                export KUBECONFIG=$WORKSPACE/kubeconfig
+
+                kubectl config use-context myproject2-context
+                kubectl apply -f k8s/deployment.yaml
+                kubectl apply -f k8s/service.yaml
+            '''
         }
+    }
+}
 
         stage('Verify Deployment') {
             steps {
