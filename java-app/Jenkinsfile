@@ -68,14 +68,6 @@ pipeline {
     }
 }
 
-        stage('Create Kind Cluster') {
-    steps {
-        sh '''
-            kind create cluster --name myproject2
-            kubectl cluster-info
-        '''
-    }
-}
 
        stage('Deploy to myproject2 Cluster') {
     steps {
