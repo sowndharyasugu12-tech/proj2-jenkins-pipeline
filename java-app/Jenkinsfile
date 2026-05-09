@@ -87,7 +87,6 @@ pipeline {
         }
     }
 }
-}
     stage('Verify Service') {
     steps {
         sh '''
@@ -102,6 +101,7 @@ pipeline {
             curl --fail http://$NODE_IP:$NODE_PORT || exit 1
         '''
     }
+}
 }
 
     post {
