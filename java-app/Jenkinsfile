@@ -50,12 +50,11 @@ pipeline {
             }
         }
 
-    stage('Docker Build & Push') {
+  stage('Docker Build & Push') {
     steps {
         script {
             withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
                 sh """
-                    export DOCKER_BUILDKIT=1
                     docker build \
                         -t sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER} \
                         -t sowndharyasugu12-tech/proj2-jenkins-pipeline:latest \
@@ -68,6 +67,7 @@ pipeline {
         }
     }
 }
+
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
