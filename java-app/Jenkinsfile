@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "9500588005/java-app"
+        DOCKER_HUB_USER = "9500588005"
     }
 
     stages {
@@ -56,12 +56,12 @@ pipeline {
             withDockerRegistry(credentialsId: 'dockerhub-credentials', url: '') {
                 sh """
                     docker build \
-                        -t sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER} \
-                        -t sowndharyasugu12-tech/proj2-jenkins-pipeline:latest \
+                        -t  proj2-jenkins-pipeline:${env.BUILD_NUMBER} \
+                        -t  proj2-jenkins-pipeline:latest \
                         java-app
 
-                    docker push sowndharyasugu12-tech/proj2-jenkins-pipeline:${env.BUILD_NUMBER}
-                    docker push sowndharyasugu12-tech/proj2-jenkins-pipeline:latest
+                    docker push $DOCKER_HUB_USER/proj2-jenkins-pipeline:${env.BUILD_NUMBER}
+                    docker push $DOCKER_HUB_USER/proj2-jenkins-pipeline:latest
                 """
             }
         }
